@@ -12,7 +12,7 @@ load_dotenv()
 # --- Configuration ---
 app = Flask(__name__)
 # Allow requests from your React frontend (port 3000)
-CORS(app, resources={r"/analyze": {"origins": "http://localhost:3000"}})
+CORS(app)
 
 # Configure the Gemini API key
 try:
