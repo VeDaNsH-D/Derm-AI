@@ -65,24 +65,24 @@ safety_settings = {
     HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
 }
 
-    # This is the prompt we send to the model
-    prompt_parts = [
-        SYSTEM_PROMPT,
+ # This is the prompt we send to the model
+prompt_parts = [
+    SYSTEM_PROMPT,
         "Here is the image provided by the user:",
-        img,
+    img,
         "\nProvide your educational analysis based on this image, following all safety rules."
-    ]
+]
 
-    try:
-        # Generate the content
-        response = model.generate_content(prompt_parts, safety_settings=safety_settings)
+try:
+    # Generate the content
+    response = model.generate_content(prompt_parts, safety_settings=safety_settings)
         
-        # Return the AI's text response
-        return jsonify({'analysis': response.text})
-    except Exception as e:
-        # Handle potential API errors (e.g., safety blocks, connection issues)
-        print(f"Error generating content: {e}")
-        return jsonify({'error': 'Failed to analyze image. The content may be unsafe or an API error occurred.'}), 500
+    # Return the AI's text response
+    return jsonify({'analysis': response.text})
+except Exception as e:
+    # Handle potential API errors (e.g., safety blocks, connection issues)
+    print(f"Error generating content: {e}")
+    return jsonify({'error': 'Failed to analyze image. The content may be unsafe or an API error occurred.'}), 500
 
 # --- Run the App ---
 if __name__ == '__main__':
