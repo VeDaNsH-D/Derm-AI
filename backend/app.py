@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 from PIL import Image
+from google.generativeai.types import HarmCategory, HarmBlockThreshold
 
 # Load environment variables
 load_dotenv()
@@ -54,8 +55,15 @@ def analyze_image():
         return jsonify({'error': f'Invalid image file: {str(e)}'}), 400
 
     # Initialize the Gemini Model
-    # We use 'gemini-pro-vision' which can handle text and images
-    model = genai.GenerativeModel('gemini-pro-vision')
+model = genai.GenerativeModel('gemini-pro-vision')
+
+# Define safety settings to be more lenient for medical images
+safety_settings = {
+    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+}
 
     # This is the prompt we send to the model
     prompt_parts = [
@@ -67,7 +75,7 @@ def analyze_image():
 
     try:
         # Generate the content
-        response = model.generate_content(prompt_parts)
+        response = model.generate_content(prompt_parts, safety_settings=safety_settings)
         
         # Return the AI's text response
         return jsonify({'analysis': response.text})
