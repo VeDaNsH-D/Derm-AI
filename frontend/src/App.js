@@ -14,7 +14,7 @@ function App() {
   const fileInputRef = useRef(null);
 
   // URL of your Flask backend
-  const API_URL = 'http://127.0.0.1:5000/analyze';
+  const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000/analyze';
 
   // Handle file selection
   const handleFileChange = (e) => {
@@ -118,5 +118,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;
