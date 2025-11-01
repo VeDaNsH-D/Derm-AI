@@ -66,7 +66,7 @@ function App() {
   return (
     <div className="App">
       <header>
-        <h1>💬 DermAI-ssist</h1>
+        <h1>Derm-AI</h1>
       </header>
       <main>
         {/* Hidden file input */}
@@ -121,3 +121,4 @@ function App() {
 
 
 export default App;
+
