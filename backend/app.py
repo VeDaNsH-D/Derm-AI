@@ -78,4 +78,4 @@ def analyze_image():
 
 # --- Run the App ---
 if __name__ == '__main__':
-    app.run(debug=True, port=5000)c
+    app.run(debug=True, port=5000)
