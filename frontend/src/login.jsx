@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import "./login.css";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function Login({ onLoginSuccess }) {
     const [email, setEmail] = useState("");
@@ -24,6 +25,7 @@ export default function Login({ onLoginSuccess }) {
     return (
         <div className="login-wrapper">
             <div className="login-card">
+
                 <h1 className="brand">Derm-AI</h1>
                 <p className="subtitle">Smart Dermatology Assistant</p>
 
@@ -48,6 +50,17 @@ export default function Login({ onLoginSuccess }) {
                         Sign In
                     </button>
                 </form>
+
+                <p className="or-line">OR</p>
+
+                <GoogleLogin
+                    onSuccess={(res) => {
+                        console.log("Google Login Success:", res);
+                        onLoginSuccess();
+                    }}
+                    onError={() => console.log("Google Login Failed")}
+                />
+
             </div>
         </div>
     );
