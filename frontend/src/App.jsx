@@ -1,23 +1,36 @@
 import React, { useState } from "react";
-import Login from "./login.jsx";
-import Analyze from "./Analyze.jsx";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./Login";
+import Analyze from "./Analyze";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-  // After login, set this to true
-  const handleLoginSuccess = () => {
-    setIsLoggedIn(true);
-  };
-
-  // Use a React Fragment (<>) so it doesn't add an extra div
   return (
-    <>
-      {!isLoggedIn ? (
-        <Login onLoginSuccess={handleLoginSuccess} />
-      ) : (
-        <Analyze />
-      )}
-    </>
+    <Router>
+      <Routes>
+
+        {/* Landing page → Login */}
+        <Route
+          path="/"
+          element={
+            isLoggedIn
+              ? <Navigate to="/analyze" replace />
+              : <Login onLoginSuccess={() => setIsLoggedIn(true)} />
+          }
+        />
+
+        {/* Protected Analyze page */}
+        <Route
+          path="/analyze"
+          element={
+            isLoggedIn
+              ? <Analyze />
+              : <Navigate to="/" replace />
+          }
+        />
+
+      </Routes>
+    </Router>
   );
 }

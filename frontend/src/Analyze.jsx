@@ -1,55 +1,51 @@
-import React, { useState, useRef } from 'react';
-import axios from 'axios';
-import './App.css';
-import './loader.css';
+import React, { useState, useRef } from "react";
+import axios from "axios";
+import "./analyze.css";   // << IMPORTANT
 
-function Analyze() {
-
+export default function Analyze() {
     const [image, setImage] = useState(null);
-    const [previewUrl, setPreviewUrl] = useState('');
-    const [analysis, setAnalysis] = useState('');
-    const [error, setError] = useState('');
+    const [previewUrl, setPreviewUrl] = useState("");
+    const [analysis, setAnalysis] = useState("");
+    const [error, setError] = useState("");
     const [isLoading, setIsLoading] = useState(false);
 
     const fileInputRef = useRef(null);
-    const API_URL = process.env.REACT_APP_API_URL || 'http://127.0.0.1:5000/analyze';
+    const API_URL = "http://127.0.0.1:5000/analyze";
 
     const handleFileChange = (e) => {
         const file = e.target.files[0];
         if (file) {
             setImage(file);
             setPreviewUrl(URL.createObjectURL(file));
-            setAnalysis('');
-            setError('');
+            setAnalysis("");
+            setError("");
         }
     };
 
-    const triggerFileInput = () => {
-        fileInputRef.current.click();
-    };
+    const triggerFileInput = () => fileInputRef.current.click();
 
     const handleSubmit = async () => {
         if (!image) {
-            setError('Please upload an image first.');
+            setError("Please upload an image first.");
             return;
         }
 
         setIsLoading(true);
-        setAnalysis('');
-        setError('');
+        setError("");
+        setAnalysis("");
 
         const formData = new FormData();
-        formData.append('image', image);
+        formData.append("image", image);
 
         try {
             const response = await axios.post(API_URL, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+                headers: { "Content-Type": "multipart/form-data" },
             });
+
             setAnalysis(response.data.analysis);
         } catch (err) {
-            const errorMsg = err.response?.data?.error || 'An unknown error occurred.';
-            setError(errorMsg);
-            console.error('Analysis error:', err);
+            const msg = err.response?.data?.error || "An unknown error occurred.";
+            setError(msg);
         } finally {
             setIsLoading(false);
         }
@@ -60,51 +56,55 @@ function Analyze() {
             <header>
                 <h1>Derm-AI</h1>
             </header>
-            <main>
-                <input
-                    type="file"
-                    accept="image/png, image/jpeg, image/webp"
-                    ref={fileInputRef}
-                    onChange={handleFileChange}
-                    style={{ display: 'none' }}
-                />
 
-                <div className="upload-section" onClick={triggerFileInput}>
-                    <p>Click to upload an image</p>
-                    <span>PNG, JPG, or WEBP</span>
+            {/* Hidden file input */}
+            <input
+                type="file"
+                accept="image/png, image/jpeg, image/webp"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                style={{ display: "none" }}
+            />
+
+            {/* Upload box */}
+            <div className="upload-section" onClick={triggerFileInput}>
+                <p>Click to upload an image</p>
+                <span>PNG, JPG, or WEBP</span>
+            </div>
+
+            {/* Preview */}
+            {previewUrl && (
+                <div className="preview">
+                    <img src={previewUrl} alt="Selected lesion" />
                 </div>
+            )}
 
-                {previewUrl && (
-                    <div className="preview">
-                        <img src={previewUrl} alt="Selected lesion" />
+            {/* Analyze button */}
+            <button
+                className="analyze-button"
+                onClick={handleSubmit}
+                disabled={!image || isLoading}
+            >
+                {isLoading ? "Analyzing..." : "Run Educational Analysis"}
+            </button>
+
+            {/* Results / Error / Loader */}
+            <div className="results-section">
+                {isLoading && (
+                    <div className="loader-container">
+                        <div className="loader"></div>
                     </div>
                 )}
 
-                <button
-                    className="analyze-button"
-                    onClick={handleSubmit}
-                    disabled={!image || isLoading}
-                >
-                    {isLoading ? 'Analyzing...' : 'Run Educational Analysis'}
-                </button>
+                {error && <div className="error-box">{error}</div>}
 
-                <div className="results-section">
-                    {isLoading && (
-                        <div className="loader-container">
-                            <div className="loader"></div>
-                        </div>
-                    )}
-                    {error && <div className="error-box">{error}</div>}
-                    {analysis && (
-                        <>
-                            <h2>Analysis Results</h2>
-                            <div className="analysis-box">{analysis}</div>
-                        </>
-                    )}
-                </div>
-            </main>
+                {analysis && (
+                    <>
+                        <h2>Analysis Results</h2>
+                        <div className="analysis-box">{analysis}</div>
+                    </>
+                )}
+            </div>
         </div>
     );
 }
-
-export default Analyze;

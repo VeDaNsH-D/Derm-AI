@@ -1,0 +1,146 @@
+/* ---------- PAGE WRAPPER ---------- */
+.App {
+    padding: 20px;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #e9f0ff, #ffffff);
+    font-family: "Poppins", sans-serif;
+}
+
+/* ---------- HEADER ---------- */
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1e3a8a;
+}
+
+/* ---------- UPLOAD SECTION ---------- */
+.upload-section {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    padding: 35px 20px;
+    background: #ffffffb5;
+    border: 2px dashed #a5b4fc;
+    border-radius: 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: 0.25s ease-in-out;
+    backdrop-filter: blur(10px);
+}
+
+.upload-section:hover {
+    background: rgba(255, 255, 255, 0.85);
+    border-color: #4f46e5;
+}
+
+.upload-section p {
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e1e1e;
+}
+
+.upload-section span {
+    font-size: 14px;
+    color: #555;
+}
+
+/* ---------- IMAGE PREVIEW ---------- */
+.preview {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.preview img {
+    width: 260px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* ---------- ANALYZE BUTTON ---------- */
+.analyze-button {
+    display: block;
+    margin: 25px auto;
+    padding: 14px 25px;
+    background: #1e3a8a;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.analyze-button:hover:not(:disabled) {
+    background: #162f6d;
+    transform: translateY(-2px);
+}
+
+.analyze-button:disabled {
+    background: #94a3b8;
+    cursor: not-allowed;
+}
+
+/* ---------- RESULTS SECTION ---------- */
+.results-section {
+    max-width: 600px;
+    margin: 0 auto;
+    margin-top: 20px;
+    text-align: center;
+}
+
+.analysis-box {
+    background: white;
+    padding: 20px;
+    border-radius: 15px;
+    margin-top: 10px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    text-align: left;
+    line-height: 1.6;
+    color: #1e1e1e;
+}
+
+.results-section h2 {
+    color: #1e3a8a;
+    font-size: 22px;
+    margin-bottom: 10px;
+}
+
+/* ---------- ERROR BOX ---------- */
+.error-box {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 12px 16px;
+    border-radius: 10px;
+    margin-top: 15px;
+    border: 1px solid #fecaca;
+    font-weight: 500;
+}
+
+/* ---------- LOADER ---------- */
+.loader-container {
+    display: flex;
+    justify-content: center;
+    margin: 25px 0;
+}
+
+.loader {
+    border: 6px solid #e0e7ff;
+    border-top: 6px solid #1e3a8a;
+    border-radius: 50%;
+    width: 55px;
+    height: 55px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
