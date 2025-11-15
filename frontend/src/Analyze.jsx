@@ -4,7 +4,7 @@ import AppSidebar from "./components/AppSidebar";
 import AnalysisResults from "./components/AnalysisResults";
 import ChatHistory from "./components/ChatHistory";
 import DermTips from "./components/DermTips";
-import "./analyze.css";
+import "./Analyze.css";
 
 export default function Analyze() {
   const [image, setImage] = useState(null);
@@ -71,7 +71,7 @@ export default function Analyze() {
   return (
     <div className="analyze-container">
       <AppSidebar onLogout={handleLogout} />
-      
+
       <div className="analyze-main">
         {/* Header */}
         <header className="analyze-header">
@@ -105,7 +105,7 @@ export default function Analyze() {
             {previewUrl && (
               <div className="preview-section">
                 <img src={previewUrl || "/placeholder.svg"} alt="Selected lesion" />
-                <button 
+                <button
                   className="remove-btn"
                   onClick={() => {
                     setImage(null);
