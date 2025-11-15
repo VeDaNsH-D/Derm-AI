@@ -15,7 +15,7 @@ export default function Analyze({ onLogout }) {
   const [isLoading, setIsLoading] = useState(false);
 
   const fileInputRef = useRef(null);
-  const API_URL = "http://127.0.0.1:5000/analyze";
+  const API_URL = "https://derm-ai-c8yx.onrender.com/analyze";
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
