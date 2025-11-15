@@ -1,45 +1,31 @@
 import React, { useState } from "react";
+import { History, Settings, HelpCircle, FileText, BookOpen, Share2, Download, LogOut, Home, Microscope } from 'lucide-react';
 import "./AppSidebar.css";
 
 export default function AppSidebar({ onLogout }) {
   const [activeTab, setActiveTab] = useState("analyze");
 
+  const tabs = [
+    { id: "analyze", label: "Analyze", icon: Microscope },
+    { id: "history", label: "History", icon: History },
+    { id: "resources", label: "Resources", icon: BookOpen },
+  ];
+
+  const features = [
+    { id: "export", label: "Export Results", icon: Download, color: "#3b82f6" },
+    { id: "share", label: "Share Analysis", icon: Share2, color: "#10b981" },
+    { id: "help", label: "Help & Support", icon: HelpCircle, color: "#f59e0b" },
+    { id: "settings", label: "Settings", icon: Settings, color: "#8b5cf6" },
+  ];
+
   return (
     <div className="app-sidebar">
       {/* Header */}
       <div className="sidebar-header">
-                <a href="/" className="sidebar-logo">
-                    <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                    >
-                        <path
-                            d="M12 2L2 7L12 12L22 7L12 2Z"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M2 17L12 22L22 17"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                        <path
-                            d="M2 12L12 17L22 12"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                        />
-                    </svg>
-                    <span>Derm-AI</span>
-                </a>
+        <div className="sidebar-logo">
+          <Microscope size={24} />
+          <span>DermAI</span>
+        </div>
       </div>
 
       {/* Navigation Tabs */}
