@@ -2,20 +2,28 @@
 # IMPORTS
 # ---------------------------------------------------------
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from PIL import Image
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
+import os
+from dotenv import load_dotenv
 
 # ---------------------------------------------------------
 # FLASK APP INIT
 # ---------------------------------------------------------
 app = Flask(__name__)
+CORS(app) 
+load_dotenv()
 
 # ---------------------------------------------------------
 # GEMINI CONFIG
 # ---------------------------------------------------------
 # Replace with your API key
-genai.configure(api_key="YOUR_API_KEY_HERE")
+gemini_api_key = os.environ.get("GEMINI_API_KEY")
+if not gemini_api_key:
+    raise ValueError("No GEMINI_API_KEY found in environment variables.")
+genai.configure(api_key=gemini_api_key)
 
 SYSTEM_PROMPT = """
 You are an educational assistant. Analyze the image and explain it clearly.
@@ -75,9 +83,18 @@ def analyze_image():
         # Return analysis
         return jsonify({'analysis': response.text})
 
+    except (genai.errors.InternalServerError, genai.errors.ResourceExhaustedError) as e:
+        print(f"[Gemini Error] {type(e).__name__}: {e}")
+        return jsonify({
+            'error': 'The service is currently unavailable or overloaded. Please try again later.'
+        }), 503
+    except genai.errors.InvalidArgumentError as e:
+        print(f"[Gemini Error] InvalidArgumentError: {e}")
+        return jsonify({'error': 'Invalid request. Please check the image format and size.'}), 400
     except Exception as e:
-        print(f"[Gemini Error] {e}")
-        return jsonify({'error': 'Failed to analyze image. Possibly unsafe content or API error.'}), 500
+        # Catch any other unexpected errors
+        print(f"[Unexpected Error] {type(e).__name__}: {e}")
+        return jsonify({'error': 'An unexpected error occurred. Please try again.'}), 500
 
 
 # ---------------------------------------------------------
