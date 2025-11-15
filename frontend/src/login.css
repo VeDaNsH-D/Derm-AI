@@ -1,3 +1,6 @@
+*{
+    cursor: default;
+}
 /* ---------- Full Page Wrapper ---------- */
 .login-wrapper {
     display: flex;
@@ -53,24 +56,26 @@ input:focus {
     box-shadow: 0 0 7px rgba(40, 72, 157, 0.25);
 }
 
-/* ---------- Login Button ---------- */
+/* ---------- Login Button (MODIFIED) ---------- */
 .login-btn {
     width: 100%;
     padding: 14px;
     margin-top: 12px;
-    background: #1e3a8a;
+    background: #10B981; /* Changed background to green */
     color: #fff;
     border: none;
-    border-radius: 12px;
+    border-radius: 30px; /* Made it more rounded */
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.25s ease;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); /* Added a subtle shadow */
 }
 
 .login-btn:hover {
-    background: #162c6a;
+    background: #059669; /* Darker green on hover */
     transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 /* ---------- Error Message ---------- */

@@ -1,0 +1,127 @@
+.chat-history {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-shadow: none;
+}
+
+.history-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.history-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.history-header svg {
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px 12px;
+  color: #6b7280;
+}
+
+.empty-state p {
+  margin: 0 0 4px 0;
+  font-weight: 500;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.empty-state span {
+  display: block;
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Minimalist history items without gradients */
+.history-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 6px;
+  background: #f9fafb;
+  transition: background 0.2s ease;
+  cursor: pointer;
+  border: 1px solid #f3f4f6;
+}
+
+.history-item:hover {
+  background: #f3f4f6;
+  transform: none;
+}
+
+.item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-title {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  font-weight: 500;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.item-date {
+  font-size: 11px;
+  color: #9ca3af;
+}
+
+.delete-btn {
+  background: none;
+  border: none;
+  color: #d1d5db;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+  flex-shrink: 0;
+}
+
+.delete-btn:hover {
+  color: #ef4444;
+}
+
+/* Scrollbar styling */
+.chat-history::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chat-history::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-history::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.chat-history::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}

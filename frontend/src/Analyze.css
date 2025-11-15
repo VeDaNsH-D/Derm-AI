@@ -1,146 +1,296 @@
-/* ---------- PAGE WRAPPER ---------- */
-.App {
-    padding: 20px;
-    min-height: 100vh;
-    background: linear-gradient(135deg, #e9f0ff, #ffffff);
-    font-family: "Poppins", sans-serif;
+/* *{
+  cursor: default;
+} */
+.analyze-container {
+  display: flex;
+  min-height: 100vh;
+  background: #ffffff;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
 }
 
-/* ---------- HEADER ---------- */
-header {
-    text-align: center;
-    margin-bottom: 20px;
+.analyze-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-header h1 {
-    font-size: 32px;
-    font-weight: 700;
-    color: #1e3a8a;
+/* Removed gradient, changed to solid color for classic medical look */
+.analyze-header {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  color: #1f2937;
+  padding: 24px 32px;
+  box-shadow: none;
 }
 
-/* ---------- UPLOAD SECTION ---------- */
+.header-content h1 {
+  margin: 0 0 4px 0;
+  font-size: 28px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: #111827;
+}
+
+.header-content p {
+  margin: 0;
+  font-size: 14px;
+  opacity: 1;
+  font-weight: 400;
+  color: #6b7280;
+}
+
+.analyze-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  grid-template-rows: auto 1fr;
+  gap: 20px;
+  padding: 20px;
+  overflow: hidden;
+  background: #fafafa;
+}
+
+.analyze-section {
+  grid-row: 1 / 3;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+
+/* Minimalist upload section - removed dashed border and hover effects */
 .upload-section {
-    width: 100%;
-    max-width: 420px;
-    margin: 0 auto;
-    padding: 35px 20px;
-    background: #ffffffb5;
-    border: 2px dashed #a5b4fc;
-    border-radius: 15px;
-    cursor: pointer;
-    text-align: center;
-    transition: 0.25s ease-in-out;
-    backdrop-filter: blur(10px);
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 48px 32px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+  box-shadow: none;
 }
 
 .upload-section:hover {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: #4f46e5;
+  border-color: #9ca3af;
+  background: #ffffff;
+  transform: none;
+  box-shadow: none;
+}
+
+.upload-icon {
+  font-size: 48px;
+  margin-bottom: 12px;
+  opacity: 0.7;
 }
 
 .upload-section p {
-    font-size: 18px;
-    font-weight: 600;
-    color: #1e1e1e;
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #111827;
 }
 
 .upload-section span {
-    font-size: 14px;
-    color: #555;
+  display: block;
+  color: #9ca3af;
+  font-size: 13px;
+  font-weight: 400;
 }
 
-/* ---------- IMAGE PREVIEW ---------- */
-.preview {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
+.preview-section {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e5e7eb;
 }
 
-.preview img {
-    width: 260px;
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+.preview-section img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 400px;
+  object-fit: cover;
 }
 
-/* ---------- ANALYZE BUTTON ---------- */
+.remove-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: rgba(31, 41, 55, 0.7);
+  color: white;
+  border: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: background 0.2s ease;
+  font-weight: bold;
+}
+
+.remove-btn:hover {
+  background: rgba(31, 41, 55, 0.9);
+}
+
+/* Changed button to solid color without gradient */
 .analyze-button {
-    display: block;
-    margin: 25px auto;
-    padding: 14px 25px;
-    background: #1e3a8a;
-    color: white;
-    border: none;
-    border-radius: 12px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s ease;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  box-shadow: none;
+  text-transform: none;
+  letter-spacing: 0;
 }
 
 .analyze-button:hover:not(:disabled) {
-    background: #162f6d;
-    transform: translateY(-2px);
+  background: #2563eb;
+  transform: none;
+  box-shadow: none;
 }
 
 .analyze-button:disabled {
-    background: #94a3b8;
-    cursor: not-allowed;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-/* ---------- RESULTS SECTION ---------- */
-.results-section {
-    max-width: 600px;
-    margin: 0 auto;
-    margin-top: 20px;
-    text-align: center;
+.analyze-sidebar {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
 }
 
-.analysis-box {
-    background: white;
-    padding: 20px;
-    border-radius: 15px;
-    margin-top: 10px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-    text-align: left;
-    line-height: 1.6;
-    color: #1e1e1e;
+.sidebar-tabs-toggle {
+  display: flex;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.results-section h2 {
-    color: #1e3a8a;
-    font-size: 22px;
-    margin-bottom: 10px;
+.toggle-btn {
+  flex: 1;
+  padding: 12px;
+  background: none;
+  border: none;
+  font-size: 13px;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-transform: none;
+  letter-spacing: 0;
+  border-bottom: 2px solid transparent;
 }
 
-/* ---------- ERROR BOX ---------- */
-.error-box {
-    background: #fee2e2;
-    color: #b91c1c;
-    padding: 12px 16px;
-    border-radius: 10px;
-    margin-top: 15px;
-    border: 1px solid #fecaca;
-    font-weight: 500;
+.toggle-btn.active {
+  color: #111827;
+  border-bottom-color: #3b82f6;
+  background: #f3f4f6;
 }
 
-/* ---------- LOADER ---------- */
-.loader-container {
-    display: flex;
-    justify-content: center;
-    margin: 25px 0;
+.sidebar-content-wrapper {
+  flex: 1;
+  overflow: hidden;
 }
 
-.loader {
-    border: 6px solid #e0e7ff;
-    border-top: 6px solid #1e3a8a;
-    border-radius: 50%;
-    width: 55px;
-    height: 55px;
-    animation: spin 1s linear infinite;
+.analyze-tips-section {
+  grid-column: 2;
+  grid-row: 2;
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  overflow-y: auto;
+  border: 1px solid #e5e7eb;
 }
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg);
-    }
+/* Responsive */
+@media (max-width: 1024px) {
+  .analyze-content {
+    grid-template-columns: 1fr;
+  }
+
+  .analyze-sidebar {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 640px) {
+  .analyze-container {
+    flex-direction: column;
+  }
+
+  .analyze-header {
+    padding: 16px;
+  }
+
+  .header-content h1 {
+    font-size: 20px;
+  }
+
+  .analyze-content {
+    grid-template-columns: 1fr;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .upload-section {
+    padding: 32px 16px;
+  }
+}
+
+/* Scrollbar styling */
+.analyze-section::-webkit-scrollbar {
+  width: 6px;
+}
+
+.analyze-section::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.analyze-section::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.analyze-section::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+@media (max-width: 1200px) {
+  .analyze-content {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto auto 1fr;
+  }
+
+  .analyze-section {
+    grid-row: 2;
+    grid-column: 1;
+  }
+
+  .analyze-sidebar {
+    grid-row: 1;
+    grid-column: 1;
+    max-height: 200px;
+  }
+
+  .analyze-tips-section {
+    grid-row: 3;
+    grid-column: 1;
+    max-height: 250px;
+  }
 }
