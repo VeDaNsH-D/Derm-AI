@@ -1,3 +1,4 @@
+// src/App.jsx
 import React, { useState } from 'react';
 import {
   BrowserRouter as Router,
@@ -32,7 +33,11 @@ export default function App() {
         <Route
           path="/analyze"
           element={
-            isLoggedIn ? <Analyze /> : <Navigate to="/login" replace />
+            isLoggedIn ? (
+              <Analyze onLogout={() => setIsLoggedIn(false)} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         />
 
