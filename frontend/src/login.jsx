@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import "./login.css";
 import { GoogleLogin } from "@react-oauth/google";
+import DermAILogo from "./components/DermAILogo"; // Import logo
 
 export default function Login({ onLoginSuccess }) {
     const [email, setEmail] = useState("");
@@ -14,7 +15,6 @@ export default function Login({ onLoginSuccess }) {
             setError("Please fill in all fields.");
             return;
         }
-
         if (email === "admin@derm.ai" && password === "admin") {
             onLoginSuccess();
         } else {
@@ -25,6 +25,11 @@ export default function Login({ onLoginSuccess }) {
     return (
         <div className="login-wrapper">
             <div className="login-card">
+                
+                {/* Added Logo here */}
+                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
+                    <DermAILogo size={80} />
+                </div>
 
                 <h1 className="brand">Derm-AI</h1>
                 <p className="subtitle">Smart Dermatology Assistant</p>

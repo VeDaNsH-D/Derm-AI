@@ -1,22 +1,21 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
+import { UploadCloud } from "lucide-react"; 
 import AppSidebar from "./components/AppSidebar";
 import AnalysisResults from "./components/AnalysisResults";
-import ChatHistory from "./components/ChatHistory";
-import DermTips from "./components/DermTips";
+import HealthTips from "./components/HealthTips";
+import DermAILogo from "./components/DermAILogo";
 import "./Analyze.css";
 
-export default function Analyze() {
+export default function Analyze({ onLogout }) {
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [analyses, setAnalyses] = useState([]);
-  const [showSidePanels, setShowSidePanels] = useState("tips");
 
   const fileInputRef = useRef(null);
-  const API_URL = "https://derm-ai-c8yx.onrender.com/analyze";
+  const API_URL = "http://127.0.0.1:5000/analyze";
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -49,13 +48,6 @@ export default function Analyze() {
       });
 
       setAnalysis(response.data.analysis);
-      setAnalyses([
-        {
-          title: `Analysis - ${new Date().toLocaleString()}`,
-          date: new Date().toLocaleDateString(),
-        },
-        ...analyses,
-      ]);
     } catch (err) {
       const msg = err.response?.data?.error || "An unknown error occurred.";
       setError(msg);
@@ -64,14 +56,11 @@ export default function Analyze() {
     }
   };
 
-  const handleLogout = () => {
-    window.location.href = "/login";
-  };
-
   return (
     <div className="analyze-container">
-      <AppSidebar onLogout={handleLogout} />
-
+      {/* Sidebar now handles its own open/close on hover via CSS */}
+      <AppSidebar onLogout={onLogout} />
+      
       <div className="analyze-main">
         {/* Header */}
         <header className="analyze-header">
@@ -83,16 +72,44 @@ export default function Analyze() {
 
         {/* Content Area */}
         <div className="analyze-content">
-          {/* Left Section - Upload & Results */}
+          {/* Left Column: Analysis Interface */}
           <div className="analyze-section">
-            {/* Upload box */}
+            
+            <div className="greeting-section">
+              <div style={{ marginBottom: '16px' }}>
+                <DermAILogo size={56} />
+              </div>
+              <h2>Good afternoon</h2>
+              <p>How can I assist with dermatological analysis today?</p>
+            </div>
+
+            <div className="suggestion-cards">
+              <div className="suggestion-card">
+                <h3>Analyze skin condition</h3>
+                <p>Upload image for AI-powered analysis</p>
+              </div>
+              <div className="suggestion-card">
+                <h3>View analysis history</h3>
+                <p>Browse your past dermatology reports</p>
+              </div>
+              <div className="suggestion-card">
+                <h3>Learn about conditions</h3>
+                <p>Explore skin condition resources</p>
+              </div>
+              <div className="suggestion-card">
+                <h3>Get personalized advice</h3>
+                <p>Ask questions about skin health</p>
+              </div>
+            </div>
+
             <div className="upload-section" onClick={triggerFileInput}>
-              <div className="upload-icon">📸</div>
+              <div className="upload-icon-placeholder">
+                <UploadCloud size={32} color="#000000" />
+              </div>
               <p>Click to upload an image</p>
               <span>PNG, JPG, or WEBP (Max 5MB)</span>
             </div>
 
-            {/* Hidden file input */}
             <input
               type="file"
               accept="image/png, image/jpeg, image/webp"
@@ -101,23 +118,21 @@ export default function Analyze() {
               style={{ display: "none" }}
             />
 
-            {/* Preview */}
             {previewUrl && (
               <div className="preview-section">
                 <img src={previewUrl || "/placeholder.svg"} alt="Selected lesion" />
-                <button
+                <button 
                   className="remove-btn"
                   onClick={() => {
                     setImage(null);
                     setPreviewUrl("");
                   }}
                 >
-                  ✕
+                  ×
                 </button>
               </div>
             )}
 
-            {/* Analyze button */}
             <button
               className="analyze-button"
               onClick={handleSubmit}
@@ -126,7 +141,6 @@ export default function Analyze() {
               {isLoading ? "Analyzing..." : "Run Educational Analysis"}
             </button>
 
-            {/* Results */}
             <AnalysisResults
               analysis={analysis}
               isLoading={isLoading}
@@ -134,30 +148,9 @@ export default function Analyze() {
             />
           </div>
 
-          {/* Right Sidebar - History & Tips */}
-          <div className="analyze-sidebar">
-            <div className="sidebar-tabs-toggle">
-              <button
-                className={`toggle-btn ${showSidePanels === "history" ? "active" : ""}`}
-                onClick={() => setShowSidePanels("history")}
-              >
-                History
-              </button>
-              <button
-                className={`toggle-btn ${showSidePanels === "tips" ? "active" : ""}`}
-                onClick={() => setShowSidePanels("tips")}
-              >
-                Tips
-              </button>
-            </div>
-
-            <div className="sidebar-content-wrapper">
-              {showSidePanels === "history" ? (
-                <ChatHistory analyses={analyses} />
-              ) : (
-                <DermTips />
-              )}
-            </div>
+          {/* Right Column: Tips Only */}
+          <div className="right-panel">
+            <HealthTips />
           </div>
         </div>
       </div>

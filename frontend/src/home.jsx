@@ -1,5 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import DermAILogo from "./components/DermAILogo"; // Import logo
 import "./home.css";
 
 export default function Home() {
@@ -10,7 +11,11 @@ export default function Home() {
       {/* ================= HEADER ================= */}
       <header className="header">
         <div className="header-inner">
-          <div className="logo">Derm<span>AI</span></div>
+          {/* Updated Logo Section */}
+          <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <DermAILogo size={32} />
+            <div>Derm<span>AI</span></div>
+          </div>
 
           <nav className="nav">
             <a href="#features">Features</a>
@@ -24,6 +29,8 @@ export default function Home() {
         </div>
       </header>
 
+      {/* ... (Rest of the Home component remains the same) ... */}
+      
       {/* ================= HERO ================= */}
       <section className="hero">
         <div className="hero-text">
@@ -44,12 +51,15 @@ export default function Home() {
 
         <div className="hero-visual">
           <div className="hero-image-placeholder">
-            Skin Analysis Preview
+            {/* Optional: Add large logo inside placeholder */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
+                <DermAILogo size={100} />
+                <span>Skin Analysis Preview</span>
+            </div>
           </div>
         </div>
       </section>
-
-      {/* ================= FEATURES ================= */}
+      {/* ... features, process, cta, footer ... */}
       <section id="features" className="features">
         <h2 className="section-title">Features</h2>
         <p className="section-subtitle">

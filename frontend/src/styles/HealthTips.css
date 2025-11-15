@@ -1,97 +1,192 @@
 .health-tips-container {
-    padding: 0;
-  }
-  
-  .tips-header {
-    margin-bottom: 20px;
-  }
-  
-  .tips-header h3 {
-    margin: 0 0 4px 0;
-    font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-  }
-  
-  .tips-header p {
-    margin: 0;
-    font-size: 13px;
-    color: #6b7280;
-  }
-  
-  /* Clean grid layout without gradients */
-  .tips-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-    gap: 12px;
-  }
-  
-  .tip-card {
-    padding: 16px;
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-  
-  .tip-card:hover {
-    border-color: #d1d5db;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    background: #ffffff;
-  }
-  
-  .tip-card.expanded {
-    grid-column: span 2;
-    background: #ffffff;
-    border-color: #d1d5db;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  }
-  
-  .tip-icon {
-    color: #3b82f6;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: #eff6ff;
-    border-radius: 6px;
-  }
-  
-  .tip-content h4 {
-    margin: 0;
-    font-size: 14px;
-    font-weight: 600;
-    color: #111827;
-  }
-  
-  .tip-description {
-    margin: 0;
-    font-size: 12px;
-    color: #6b7280;
-    line-height: 1.4;
-  }
-  
-  .tip-details {
-    margin: 12px 0 0 0;
-    font-size: 13px;
-    color: #374151;
-    line-height: 1.5;
-    padding-top: 12px;
-    border-top: 1px solid #e5e7eb;
-  }
-  
-  @media (max-width: 768px) {
-    .tips-grid {
-      grid-template-columns: 1fr;
-    }
-  
-    .tip-card.expanded {
-      grid-column: span 1;
-    }
-  }
-  
+  /* Added card styling to match the rest of the UI */
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  height: fit-content; /* Ensures it wraps content properly */
+}
+
+/* --- Header Styling --- */
+.tips-header-modern {
+  display: flex;
+  align-items: center;
+  gap: 16px; /* Increased gap to prevent overlapping */
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.header-icon-bg {
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; /* Prevents the icon from being squished */
+}
+
+.header-icon-svg {
+  color: #ffffff;
+}
+
+.tips-header-modern h3 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+.tips-header-modern p {
+  margin: 0;
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.4;
+}
+
+/* --- List Layout --- */
+.tips-list-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* --- Modern Card Styling (Minimalist) --- */
+.tip-card-modern {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.tip-card-modern:hover {
+  border-color: #9ca3af;
+  transform: translateY(-1px);
+}
+
+/* Active State: High Contrast Black & White */
+.tip-card-modern.active {
+  border-color: #000000;
+  background: #ffffff;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+/* --- Summary Row --- */
+.tip-summary {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.tip-icon-modern {
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #000000;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.tip-card-modern.active .tip-icon-modern {
+  background: #000000;
+  color: #ffffff;
+  border-color: #000000;
+}
+
+.tip-text-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0; /* Fixes flex overflow issues */
+}
+
+.tip-text-content h4 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  transition: color 0.2s ease;
+}
+
+.tip-card-modern.active .tip-text-content h4 {
+  color: #000000;
+  font-weight: 600;
+}
+
+.tip-preview {
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tip-chevron {
+  color: #9ca3af;
+  flex-shrink: 0;
+  transition: transform 0.3s ease, color 0.2s ease;
+}
+
+.tip-chevron.rotated {
+  transform: rotate(90deg);
+  color: #000000;
+}
+
+/* --- Details Section (Expandable) --- */
+.tip-details-wrapper {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease-out;
+}
+
+.tip-card-modern.active .tip-details-wrapper {
+  grid-template-rows: 1fr;
+}
+
+.tip-details-inner {
+  overflow: hidden;
+  background: #fafafa;
+  border-top: 1px solid #f3f4f6;
+}
+
+.main-detail {
+  padding: 16px 16px 4px 16px;
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+.tip-tag {
+  padding: 0 16px 16px 16px;
+  margin-top: 12px;
+}
+
+.tip-tag span {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #000000;
+  background: #ffffff;
+  padding: 4px 8px;
+  border-radius: 4px;
+  border: 1px solid #d1d5db;
+}

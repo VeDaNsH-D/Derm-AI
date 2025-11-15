@@ -1,21 +1,24 @@
 import React, { useState } from "react";
-import { History, Settings, HelpCircle, FileText, BookOpen, Share2, Download, LogOut, Home, Microscope } from 'lucide-react';
-import "./AppSidebar.css";
+import { MessageSquare, Plus, Microscope, FileText, Layers, ExternalLink, MoreHorizontal } from 'lucide-react';
+import DermAILogo from './DermAILogo';
+import './AppSidebar.css';
 
 export default function AppSidebar({ onLogout }) {
-  const [activeTab, setActiveTab] = useState("analyze");
-
-  const tabs = [
-    { id: "analyze", label: "Analyze", icon: Microscope },
-    { id: "history", label: "History", icon: History },
-    { id: "resources", label: "Resources", icon: BookOpen },
-  ];
-
-  const features = [
-    { id: "export", label: "Export Results", icon: Download, color: "#3b82f6" },
-    { id: "share", label: "Share Analysis", icon: Share2, color: "#10b981" },
-    { id: "help", label: "Help & Support", icon: HelpCircle, color: "#f59e0b" },
-    { id: "settings", label: "Settings", icon: Settings, color: "#8b5cf6" },
+  const [activeChat, setActiveChat] = useState(null);
+  
+  const recentChats = [
+    "Skin rash analysis on forearm",
+    "Mole examination and evaluation",
+    "Acne treatment consultation",
+    "Eczema symptoms discussion",
+    "Psoriasis flare-up management",
+    "Dermatitis diagnosis assistance",
+    "Skin discoloration concerns",
+    "Rosacea symptoms evaluation",
+    "Melanoma screening request",
+    "Hives and allergic reaction",
+    "Seborrheic dermatitis help",
+    "Vitiligo progression tracking",
   ];
 
   return (
@@ -23,96 +26,69 @@ export default function AppSidebar({ onLogout }) {
       {/* Header */}
       <div className="sidebar-header">
         <div className="sidebar-logo">
-          <Microscope size={24} />
-          <span>DermAI</span>
+          <DermAILogo size={30} />
+          <span style={{ fontWeight: 600, letterSpacing: '-0.5px' }}>DermAI</span>
         </div>
+
+        {/* New Chat Button */}
+        <button className="new-chat-button">
+          <div className="new-chat-icon">
+            <Plus size={14} strokeWidth={2} />
+          </div>
+          <span>New chat</span>
+        </button>
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="sidebar-tabs">
-        {tabs.map((tab) => {
-          const Icon = tab.icon;
-          return (
+      {/* Navigation */}
+      <div className="sidebar-nav">
+        <button className="nav-button">
+          <MessageSquare size={18} strokeWidth={1.8} />
+          <span>Chats</span>
+        </button>
+        <button className="nav-button">
+          <Microscope size={18} strokeWidth={1.8} />
+          <span>Analyses</span>
+        </button>
+        <button className="nav-button">
+          <Layers size={18} strokeWidth={1.8} />
+          <span>Artifacts</span>
+        </button>
+        <button className="nav-button">
+          <FileText size={18} strokeWidth={1.8} />
+          <span>Reports</span>
+          <ExternalLink size={14} strokeWidth={1.8} className="nav-external-icon" />
+        </button>
+      </div>
+
+      {/* Recents Section */}
+      <div className="recents-section">
+        <div className="recents-label">Recents</div>
+        <div className="recents-list">
+          {recentChats.map((chat, idx) => (
             <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`tab-button ${activeTab === tab.id ? "active" : ""}`}
-              title={tab.label}
+              key={idx}
+              onClick={() => setActiveChat(idx)}
+              className={`recent-item ${activeChat === idx ? 'active' : ''}`}
             >
-              <Icon size={18} />
-              <span>{tab.label}</span>
+              <span className="recent-text">{chat}</span>
+              <MoreHorizontal 
+                size={14} 
+                strokeWidth={1.8} 
+                className="recent-more-icon" 
+              />
             </button>
-          );
-        })}
-      </div>
-
-      {/* Divider */}
-      <div className="sidebar-divider"></div>
-
-      {/* Tab Content */}
-      <div className="sidebar-content">
-        {activeTab === "analyze" && (
-          <div className="tab-content">
-            <h3>Quick Actions</h3>
-            <p className="content-subtitle">Analysis tools and shortcuts</p>
-          </div>
-        )}
-
-        {activeTab === "history" && (
-          <div className="tab-content">
-            <h3>Recent Analyses</h3>
-            <div className="history-list">
-              <p className="empty-state">No analyses yet. Start by uploading an image.</p>
-            </div>
-          </div>
-        )}
-
-        {activeTab === "resources" && (
-          <div className="tab-content">
-            <h3>Learning Resources</h3>
-            <ul className="resources-list">
-              <li>
-                <FileText size={16} />
-                <span>Documentation</span>
-              </li>
-              <li>
-                <BookOpen size={16} />
-                <span>Tutorial Videos</span>
-              </li>
-              <li>
-                <HelpCircle size={16} />
-                <span>FAQ</span>
-              </li>
-            </ul>
-          </div>
-        )}
-      </div>
-
-      {/* Features Section */}
-      <div className="sidebar-features">
-        <p className="features-label">Features</p>
-        <div className="features-grid">
-          {features.map((feature) => {
-            const Icon = feature.icon;
-            return (
-              <button
-                key={feature.id}
-                className="feature-button"
-                style={{ "--feature-color": feature.color }}
-                title={feature.label}
-              >
-                <Icon size={16} />
-              </button>
-            );
-          })}
+          ))}
         </div>
       </div>
 
-      {/* Footer */}
+      {/* Footer - User Section */}
       <div className="sidebar-footer">
-        <button className="logout-button" onClick={onLogout}>
-          <LogOut size={18} />
-          <span>Logout</span>
+        <button onClick={onLogout} className="user-button">
+          <div className="user-avatar">DU</div>
+          <div className="user-info">
+            <p className="user-name">DermAI User</p>
+            <p className="user-email">user@dermai.com</p>
+          </div>
         </button>
       </div>
     </div>
