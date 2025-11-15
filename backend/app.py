@@ -15,17 +15,9 @@ CORS(app)
 load_dotenv()
 
 # --- CONFIG ---
-# 1. Get the key
 gemini_api_key = os.environ.get("GEMINI_API_KEY")
-
-# 2. Configure Gemini
-try:
-    if gemini_api_key:
-        genai.configure(api_key=gemini_api_key)
-    else:
-        print("ERROR: GEMINI_API_KEY is missing from environment variables.")
-except Exception as e:
-    print(f"Configuration Error: {e}")
+if gemini_api_key:
+    genai.configure(api_key=gemini_api_key)
 
 SYSTEM_PROMPT = """
 You are DermAI-ssist. Analyze this skin lesion image.
@@ -35,6 +27,14 @@ You are DermAI-ssist. Analyze this skin lesion image.
 4. ALWAYS recommend seeing a doctor.
 """
 
+# LIST OF MODELS TO TRY (In order of preference)
+MODEL_CANDIDATES = [
+    'gemini-1.5-flash',
+    'gemini-1.5-pro',
+    'gemini-pro-vision',
+    'gemini-1.5-flash-latest'
+]
+
 @app.route('/analyze', methods=['POST'])
 def analyze_image():
     if 'image' not in request.files:
@@ -43,46 +43,51 @@ def analyze_image():
     img_file = request.files['image']
 
     try:
-        # Robust Image Loading: Read bytes into a buffer
-        # This fixes issues where the file pointer gets lost
+        # Robust Image Loading
         img_bytes = img_file.read()
         img = Image.open(io.BytesIO(img_bytes))
     except Exception as e:
         return jsonify({'error': f'Image loading failed: {str(e)}'}), 400
 
-    # USE THIS MODEL
-    model_name = 'gemini-1.5-flash'
-    
-    try:
-        model = genai.GenerativeModel(model_name)
+    # Safety settings
+    safety_settings = {
+        HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+        HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+    }
 
-        safety_settings = {
-            HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
-            HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
-            HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
-            HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
-        }
+    last_error = None
 
-        response = model.generate_content(
-            [SYSTEM_PROMPT, "\nUser Image:", img], 
-            safety_settings=safety_settings
-        )
-        
-        return jsonify({
-            'analysis': response.text,
-            'model': model_name
-        })
+    # LOOP THROUGH MODELS until one works
+    for model_name in MODEL_CANDIDATES:
+        try:
+            print(f"Attempting to use model: {model_name}...")
+            model = genai.GenerativeModel(model_name)
 
-    except Exception as e:
-        # LOG THE REAL ERROR to the console
-        print(f"CRITICAL AI ERROR: {e}")
-        traceback.print_exc()
-        
-        # SEND THE REAL ERROR to the frontend so you can see it
-        return jsonify({
-            'error': f"AI Error ({model_name}): {str(e)}", 
-            'details': str(e)
-        }), 500
+            response = model.generate_content(
+                [SYSTEM_PROMPT, "\nUser Image:", img], 
+                safety_settings=safety_settings
+            )
+            
+            # If we get here, it worked!
+            return jsonify({
+                'analysis': response.text,
+                'model_used': model_name
+            })
+
+        except Exception as e:
+            print(f"Failed with {model_name}: {e}")
+            last_error = e
+            # Continue to the next model in the list...
+            continue
+
+    # If we exit the loop, NOTHING worked
+    traceback.print_exc()
+    return jsonify({
+        'error': 'All AI models failed.', 
+        'details': str(last_error)
+    }), 500
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
