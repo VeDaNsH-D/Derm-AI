@@ -33,11 +33,12 @@ gemini_api_key = os.environ.get("GEMINI_API_KEY")
 if gemini_api_key:
     genai.configure(api_key=gemini_api_key)
 
+
+SYSTEM_PROMPT = """
 You are **DermAI**, an advanced dermatological diagnostic assistant.
 Your task is to inspect the skin image and identify the underlying condition.
 You will learn from these reference cases first.
 
-SYSTEM_PROMPT = """
 [REFERENCE CASES - LEARN FROM THESE]
 1. CASE: Melanoma
    - Visuals: Asymmetrical, irregular border, black/brown/red color mix, diameter 8mm.
