@@ -1,6 +1,7 @@
 /* Main Layout */
 .app-sidebar {
-  width: 80px; /* Default collapsed width */
+  width: 80px;
+  /* Default collapsed width */
   height: 100vh;
   background-color: #1a1a1a;
   display: flex;
@@ -8,13 +9,15 @@
   position: fixed;
   left: 0;
   top: 0;
-  z-index: 100; /* High z-index to overlap content when expanded */
+  z-index: 100;
+  /* High z-index to overlap content when expanded */
   color: #d1d5db;
-  overflow-x: hidden; /* Hide text when collapsed */
+  overflow-x: hidden;
+  /* Hide text when collapsed */
   overflow-y: auto;
   border-right: 1px solid #2d2d2d;
   transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 4px 0 24px rgba(0,0,0,0.1);
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
 }
 
 /* Expand on Hover */
@@ -33,7 +36,8 @@
 }
 
 .app-sidebar:hover .sidebar-header {
-  align-items: stretch; /* Align left when expanded */
+  align-items: stretch;
+  /* Align left when expanded */
   padding: 16px 12px;
 }
 
@@ -41,7 +45,8 @@
 .sidebar-logo {
   display: flex;
   align-items: center;
-  justify-content: center; /* Center icon when collapsed */
+  justify-content: center;
+  /* Center icon when collapsed */
   margin-bottom: 20px;
   color: #f3f4f6;
   height: 40px;
@@ -49,7 +54,8 @@
 }
 
 .app-sidebar:hover .sidebar-logo {
-  justify-content: flex-start; /* Align left when expanded */
+  justify-content: flex-start;
+  /* Align left when expanded */
 }
 
 .sidebar-logo span {
@@ -63,7 +69,8 @@
 .app-sidebar:hover .sidebar-logo span {
   opacity: 1;
   width: auto;
-  transform: translateX(12px); /* Add spacing via transform */
+  transform: translateX(12px);
+  /* Add spacing via transform */
 }
 
 /* New Chat Button */
@@ -129,7 +136,8 @@
   width: 100%;
   display: flex;
   align-items: center;
-  justify-content: center; /* Center icons */
+  justify-content: center;
+  /* Center icons */
   gap: 0;
   padding: 12px;
   border: none;
@@ -192,7 +200,8 @@
 .app-sidebar:hover .recents-section {
   opacity: 1;
   visibility: visible;
-  transition-delay: 0.1s; /* Delay showing text slightly */
+  transition-delay: 0.1s;
+  /* Delay showing text slightly */
 }
 
 .recents-label {
@@ -324,13 +333,21 @@
 
 /* Animation for text fading in */
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateX(-5px); }
-  to { opacity: 1; transform: translateX(0); }
+  from {
+    opacity: 0;
+    transform: translateX(-5px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 /* Scrollbar Styling */
 .app-sidebar::-webkit-scrollbar {
-  width: 0px; /* Hide scrollbar when collapsed */
+  width: 0px;
+  /* Hide scrollbar when collapsed */
 }
 
 .app-sidebar:hover::-webkit-scrollbar {
@@ -361,12 +378,16 @@
     padding: 0;
     z-index: 200;
   }
-  
+
   .app-sidebar:hover {
-    width: 100%; /* No expansion on mobile */
+    width: 100%;
+    /* No expansion on mobile */
   }
 
-  .sidebar-header, .recents-section, .sidebar-footer, .sidebar-logo {
+  .sidebar-header,
+  .recents-section,
+  .sidebar-footer,
+  .sidebar-logo {
     display: none;
   }
 
@@ -384,9 +405,57 @@
     padding: 8px;
     font-size: 10px;
   }
-  
+
   .nav-button svg {
     width: 20px;
     height: 20px;
   }
+}
+
+/* Dropdown container */
+.user-menu-dropdown {
+  position: absolute;
+  bottom: 72px;
+  left: 16px;
+  width: 180px;
+  background: #1f1f1f;
+  border: 1px solid #2d2d2d;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  z-index: 500;
+}
+
+/* Generic dropdown item */
+.dropdown-item {
+  width: 100%;
+  padding: 12px 16px;
+  background: transparent;
+  border: none;
+  color: #d1d5db;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 150ms ease;
+}
+
+/* Hover effect */
+.dropdown-item:hover {
+  background: rgba(255, 255, 255, 0.07);
+  color: #ffffff;
+}
+
+/* Logout-specific styling */
+.dropdown-item.logout {
+  color: #f87171;
+  /* red-400 */
+  font-weight: 500;
+}
+
+/* Logout hover (more warning tone) */
+.dropdown-item.logout:hover {
+  background: rgba(244, 63, 94, 0.15);
+  /* soft red tint */
+  color: #fca5a5;
+  /* red-300 */
 }

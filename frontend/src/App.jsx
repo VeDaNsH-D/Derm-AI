@@ -1,22 +1,17 @@
 // src/App.jsx
-import React, { useState } from 'react';
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Navigate,
-} from 'react-router-dom';
-import Login from './login';
-import Analyze from './Analyze';
-import Home from './home';
+import React, { useState, useEffect } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import Login from "./login";
+import Analyze from "./Analyze";
+import Home from "./home";
 
 export default function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
 
   return (
     <Router>
       <Routes>
-        {/* Landing page / home */}
         <Route path="/" element={<Home />} />
 
         <Route
@@ -25,7 +20,12 @@ export default function App() {
             isLoggedIn ? (
               <Navigate to="/analyze" replace />
             ) : (
-              <Login onLoginSuccess={() => setIsLoggedIn(true)} />
+              <Login
+                onLoginSuccess={(userData) => {
+                  setUser(userData);
+                  setIsLoggedIn(true);
+                }}
+              />
             )
           }
         />
@@ -34,7 +34,13 @@ export default function App() {
           path="/analyze"
           element={
             isLoggedIn ? (
-              <Analyze onLogout={() => setIsLoggedIn(false)} />
+              <Analyze
+                user={user}
+                onLogout={() => {
+                  setUser(null);
+                  setIsLoggedIn(false);
+                }}
+              />
             ) : (
               <Navigate to="/login" replace />
             )

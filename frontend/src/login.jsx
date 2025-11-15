@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import "./login.css";
 import { GoogleLogin } from "@react-oauth/google";
-import DermAILogo from "./components/DermAILogo"; // Import logo
+import DermAILogo from "./components/DermAILogo";
+import { jwtDecode } from "jwt-decode";
+
 
 export default function Login({ onLoginSuccess }) {
     const [email, setEmail] = useState("");
@@ -16,7 +18,7 @@ export default function Login({ onLoginSuccess }) {
             return;
         }
         if (email === "admin@derm.ai" && password === "admin") {
-            onLoginSuccess();
+            onLoginSuccess({ name: "Admin", email: "admin@derm.ai" });
         } else {
             setError("Invalid credentials. Try again!");
         }
@@ -25,9 +27,8 @@ export default function Login({ onLoginSuccess }) {
     return (
         <div className="login-wrapper">
             <div className="login-card">
-                
-                {/* Added Logo here */}
-                <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '15px' }}>
+
+                <div style={{ display: "flex", justifyContent: "center", marginBottom: "15px" }}>
                     <DermAILogo size={80} />
                 </div>
 
@@ -60,10 +61,22 @@ export default function Login({ onLoginSuccess }) {
 
                 <GoogleLogin
                     onSuccess={(res) => {
-                        console.log("Google Login Success:", res);
-                        onLoginSuccess();
+                        console.log("GOOGLE LOGIN RAW RESPONSE:", res);
+
+                        const decoded = jwtDecode(res.credential);
+                        console.log("DECODED GOOGLE DATA:", decoded);
+
+                        const userData = {
+                            name: decoded.name,
+                            email: decoded.email,
+                            picture: decoded.picture,
+                        };
+
+                        console.log("CALLING onLoginSuccess WITH:", userData);
+
+                        onLoginSuccess(userData);
                     }}
-                    onError={() => console.log("Google Login Failed")}
+
                 />
 
             </div>

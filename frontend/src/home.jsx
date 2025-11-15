@@ -30,7 +30,7 @@ export default function Home() {
       </header>
 
       {/* ... (Rest of the Home component remains the same) ... */}
-      
+
       {/* ================= HERO ================= */}
       <section className="hero">
         <div className="hero-text">
@@ -53,8 +53,8 @@ export default function Home() {
           <div className="hero-image-placeholder">
             {/* Optional: Add large logo inside placeholder */}
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '15px' }}>
-                <DermAILogo size={100} />
-                <span>Skin Analysis Preview</span>
+              <DermAILogo size={100} />
+              <span>Skin Analysis Preview</span>
             </div>
           </div>
         </div>

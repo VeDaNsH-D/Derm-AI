@@ -1,13 +1,13 @@
 import React, { useState, useRef } from "react";
 import axios from "axios";
-import { UploadCloud } from "lucide-react"; 
+import { UploadCloud } from "lucide-react";
 import AppSidebar from "./components/AppSidebar";
 import AnalysisResults from "./components/AnalysisResults";
 import HealthTips from "./components/HealthTips";
 import DermAILogo from "./components/DermAILogo";
 import "./Analyze.css";
 
-export default function Analyze({ onLogout }) {
+export default function Analyze({ user, onLogout }) {
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [analysis, setAnalysis] = useState("");
@@ -59,8 +59,9 @@ export default function Analyze({ onLogout }) {
   return (
     <div className="analyze-container">
       {/* Sidebar now handles its own open/close on hover via CSS */}
-      <AppSidebar onLogout={onLogout} />
-      
+      <AppSidebar user={user} onLogout={onLogout} />
+
+
       <div className="analyze-main">
         {/* Header */}
         <header className="analyze-header">
@@ -74,7 +75,7 @@ export default function Analyze({ onLogout }) {
         <div className="analyze-content">
           {/* Left Column: Analysis Interface */}
           <div className="analyze-section">
-            
+
             <div className="greeting-section">
               <div style={{ marginBottom: '16px' }}>
                 <DermAILogo size={56} />
@@ -121,7 +122,7 @@ export default function Analyze({ onLogout }) {
             {previewUrl && (
               <div className="preview-section">
                 <img src={previewUrl || "/placeholder.svg"} alt="Selected lesion" />
-                <button 
+                <button
                   className="remove-btn"
                   onClick={() => {
                     setImage(null);

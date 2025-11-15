@@ -1,6 +1,7 @@
-*{
+* {
     cursor: default;
 }
+
 /* ---------- Full Page Wrapper ---------- */
 .login-wrapper {
     display: flex;
@@ -61,19 +62,23 @@ input:focus {
     width: 100%;
     padding: 14px;
     margin-top: 12px;
-    background: #10B981; /* Changed background to green */
+    background: #10B981;
+    /* Changed background to green */
     color: #fff;
     border: none;
-    border-radius: 30px; /* Made it more rounded */
+    border-radius: 30px;
+    /* Made it more rounded */
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
     transition: 0.25s ease;
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1); /* Added a subtle shadow */
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    /* Added a subtle shadow */
 }
 
 .login-btn:hover {
-    background: #059669; /* Darker green on hover */
+    background: #059669;
+    /* Darker green on hover */
     transform: translateY(-2px);
     box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
@@ -112,7 +117,7 @@ input:focus {
     right: 0;
 }
 
-/* ---------- Google Button Fix (keeps centered) ---------- */
+/* ---------- Google Button Fix ---------- */
 div[role="button"] {
     width: 100% !important;
     display: flex !important;
