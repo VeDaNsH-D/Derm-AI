@@ -1,20 +1,36 @@
 # backend/app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from flask_pymongo import PyMongo  # <-- NEW IMPORT
 from PIL import Image
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
-from dotenv import load_dotenv
+# from dotenv import load_dotenv # You can remove this if you aren't using .env at all
 import traceback
 import io
 
 # --- INIT ---
 app = Flask(__name__)
 CORS(app)
-load_dotenv()
+# load_dotenv() # Optional: Only needed if you use .env locally
 
-# --- CONFIG ---
+# --- MONGODB CONFIGURATION ---
+# The app looks for 'MONGO_URI' in the environment (Render handles this)
+mongo_uri = os.environ.get("MONGO_URI")
+
+if not mongo_uri:
+    print("WARNING: MONGO_URI not found in environment variables.")
+else:
+    app.config["MONGO_URI"] = mongo_uri
+
+# Initialize PyMongo
+try:
+    mongo = PyMongo(app)
+except Exception as e:
+    print(f"Error initializing MongoDB: {e}")
+
+# --- GEMINI CONFIGURATION ---
 gemini_api_key = os.environ.get("GEMINI_API_KEY")
 if gemini_api_key:
     genai.configure(api_key=gemini_api_key)
@@ -27,7 +43,6 @@ You are DermAI-ssist. Analyze this skin lesion image.
 4. ALWAYS recommend seeing a doctor.
 """
 
-# LIST OF MODELS TO TRY (In order of preference)
 MODEL_CANDIDATES = [
     'gemini-1.5-flash',
     'gemini-1.5-pro',
@@ -35,6 +50,25 @@ MODEL_CANDIDATES = [
     'gemini-1.5-flash-latest'
 ]
 
+# --- ROUTES ---
+
+# 1. NEW: Test DB Route
+@app.route('/test-db', methods=['GET'])
+def test_db():
+    """Checks if the database connection is active."""
+    try:
+        # Try a simple command to ping the database
+        # Use mongo.cx to access the client directly if needed, or mongo.db for the database
+        if not mongo_uri:
+             return jsonify({"error": "MONGO_URI variable is missing"}), 500
+        
+        # Ping command
+        mongo.db.command('ping')
+        return jsonify({"message": "MongoDB connection successful!", "status": "Connected"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e), "status": "Failed"}), 500
+
+# 2. Analyze Route
 @app.route('/analyze', methods=['POST'])
 def analyze_image():
     if 'image' not in request.files:
@@ -43,13 +77,12 @@ def analyze_image():
     img_file = request.files['image']
 
     try:
-        # Robust Image Loading
+        # Load image
         img_bytes = img_file.read()
         img = Image.open(io.BytesIO(img_bytes))
     except Exception as e:
         return jsonify({'error': f'Image loading failed: {str(e)}'}), 400
 
-    # Safety settings
     safety_settings = {
         HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
         HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
@@ -59,7 +92,7 @@ def analyze_image():
 
     last_error = None
 
-    # LOOP THROUGH MODELS until one works
+    # Loop through models (Fallback Strategy)
     for model_name in MODEL_CANDIDATES:
         try:
             print(f"Attempting to use model: {model_name}...")
@@ -70,7 +103,20 @@ def analyze_image():
                 safety_settings=safety_settings
             )
             
-            # If we get here, it worked!
+            # --- OPTIONAL: Log success to MongoDB ---
+            # This saves a record that an analysis happened (without saving the image itself)
+            try:
+                if mongo.db:
+                    mongo.db.analyses.insert_one({
+                        "model_used": model_name,
+                        "status": "success",
+                        # We only save the first 100 chars to save space/privacy
+                        "preview": response.text[:100] 
+                    })
+            except Exception as db_e:
+                print(f"DB Logging failed (non-critical): {db_e}")
+            # ----------------------------------------
+
             return jsonify({
                 'analysis': response.text,
                 'model_used': model_name
@@ -79,10 +125,8 @@ def analyze_image():
         except Exception as e:
             print(f"Failed with {model_name}: {e}")
             last_error = e
-            # Continue to the next model in the list...
             continue
 
-    # If we exit the loop, NOTHING worked
     traceback.print_exc()
     return jsonify({
         'error': 'All AI models failed.', 
