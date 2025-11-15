@@ -1,6 +1,6 @@
 .results-section {
   flex: 1;
-  padding: 20px;
+  padding: 20px 0; /* Adjusted padding */
   overflow-y: auto;
 }
 
@@ -8,6 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 40px 0;
 }
 
 .results-section.error {
@@ -30,11 +31,12 @@
   font-weight: 400;
 }
 
+/* Spinner converted to black/gray */
 .spinner {
   width: 40px;
   height: 40px;
   border: 3px solid #e5e7eb;
-  border-top-color: #3b82f6;
+  border-top-color: #000000; /* Black spinner */
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -51,26 +53,35 @@
   gap: 12px;
   padding: 16px;
   background: #fef2f2;
-  border: 1px solid #fecaca;
+  border: 1px solid #fee2e2;
   border-radius: 6px;
-  color: #dc2626;
+  color: #991b1b;
+  width: 100%;
 }
 
 .error-box svg {
   flex-shrink: 0;
 }
 
+/* --- Header Layout --- */
 .results-header {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between; /* Push button to right */
   margin-bottom: 20px;
   padding-bottom: 16px;
   border-bottom: 1px solid #e5e7eb;
 }
 
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Check icon converted to black */
 .check-icon {
-  color: #10b981;
+  color: #000000;
   flex-shrink: 0;
 }
 
@@ -81,25 +92,49 @@
   color: #111827;
 }
 
-/* Simplified card design for minimalist look */
+/* --- Download Button --- */
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #ffffff;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.download-btn:hover {
+  background: #f9fafb;
+  border-color: #000000;
+  color: #000000;
+}
+
+/* --- Analysis Card --- */
 .analysis-card {
   background: #ffffff;
-  border-radius: 6px;
-  padding: 20px;
+  border-radius: 8px;
+  padding: 24px;
   box-shadow: none;
   border: 1px solid #e5e7eb;
 }
 
+/* Badge converted to monochrome */
 .analysis-badge {
   display: flex;
   align-items: center;
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #3b82f6;
-  margin-bottom: 12px;
+  color: #000000; /* Black text */
+  margin-bottom: 16px;
   text-transform: uppercase;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.5px;
+  opacity: 0.8;
 }
 
 .analysis-badge svg {
@@ -108,8 +143,8 @@
 }
 
 .analysis-content {
-  font-size: 14px;
-  line-height: 1.6;
+  font-size: 15px;
+  line-height: 1.7;
   color: #374151;
   white-space: pre-wrap;
   word-break: break-word;
