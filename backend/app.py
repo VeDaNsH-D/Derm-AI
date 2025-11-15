@@ -1,12 +1,11 @@
 # backend/app.py
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from flask_pymongo import PyMongo  # <-- NEW IMPORT
+from flask_pymongo import PyMongo  
 from PIL import Image
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
 import os
-# from dotenv import load_dotenv # You can remove this if you aren't using .env at all
 import traceback
 import io
 
@@ -16,7 +15,6 @@ CORS(app)
 # load_dotenv() # Optional: Only needed if you use .env locally
 
 # --- MONGODB CONFIGURATION ---
-# The app looks for 'MONGO_URI' in the environment (Render handles this)
 mongo_uri = os.environ.get("MONGO_URI")
 
 if not mongo_uri:
