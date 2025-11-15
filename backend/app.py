@@ -16,6 +16,11 @@ app = Flask(__name__)
 CORS(app) 
 load_dotenv()
 
+@app.after_request
+def add_coop_header(response):
+    response.headers['Cross-Origin-Opener-Policy'] = 'same-origin-allow-popups'
+    return response
+
 # ---------------------------------------------------------
 # GEMINI CONFIG
 # ---------------------------------------------------------
