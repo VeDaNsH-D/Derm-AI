@@ -1,0 +1,147 @@
+.derm-tips {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 16px;
+  height: 100%;
+  overflow-y: auto;
+  box-shadow: none;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.tips-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.tips-header svg {
+  color: #f59e0b;
+  flex-shrink: 0;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Simplified tip cards - removed complex gradients */
+.tip-card {
+  border-radius: 6px;
+  background: #f9fafb;
+  overflow: hidden;
+  transition: all 0.2s ease;
+  border: 1px solid #f3f4f6;
+}
+
+.tip-card:hover {
+  background: #f3f4f6;
+  border-color: #e5e7eb;
+}
+
+.tip-card.expanded {
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.tip-button {
+  width: 100%;
+  padding: 12px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+
+.tip-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.tip-text h4 {
+  margin: 0 0 4px 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+}
+
+.tip-category {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  color: #3b82f6;
+  background: #eff6ff;
+  padding: 2px 8px;
+  border-radius: 3px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.chevron {
+  color: #9ca3af;
+  flex-shrink: 0;
+  transition: transform 0.2s ease;
+}
+
+.tip-card.expanded .chevron {
+  transform: rotate(180deg);
+}
+
+.tip-content {
+  padding: 0 12px 12px 12px;
+  border-top: 1px solid #e5e7eb;
+  animation: slideDown 0.2s ease;
+}
+
+.tip-content p {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.6;
+  color: #4b5563;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Scrollbar styling */
+.derm-tips::-webkit-scrollbar {
+  width: 6px;
+}
+
+.derm-tips::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.derm-tips::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.derm-tips::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
