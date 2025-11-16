@@ -204,7 +204,7 @@ def analyze_image():
         return jsonify({"error": "All models failed", "details": str(last_error)}), 500
 
     except Exception as e:
-        print("❌ Fatal error in analyze:", e)
+        print("Fatal error in analyze:", e)
         return jsonify({"error": str(e)}), 500
 
 
