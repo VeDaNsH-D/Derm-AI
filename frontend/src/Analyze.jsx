@@ -1,34 +1,26 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { Send, Plus, Loader2 } from "lucide-react";
+import jsPDF from "jspdf"; // <--- Import jsPDF
+import { Send, Plus, Loader2, Download } from "lucide-react"; // <--- Import Download Icon
 import AppSidebar from "./components/AppSidebar";
 import HealthTips from "./components/HealthTips";
 import DermAILogo from "./components/DermAILogo";
 import "./Analyze.css";
 
 // --- HELPER COMPONENT: Format Text ---
-// This removes special characters like **, ###, etc., and renders clean HTML
 const FormatAIResponse = ({ text }) => {
   if (!text) return null;
-
-  // Split text by lines to handle structure
   const lines = text.split("\n");
-
   return (
     <div className="formatted-content">
       {lines.map((line, index) => {
         const cleanLine = line.trim();
         if (!cleanLine) return <br key={index} />;
-
-        // Handle Headers (### Title)
         if (cleanLine.startsWith("###") || cleanLine.startsWith("##")) {
           return <h4 key={index}>{cleanLine.replace(/#/g, "").trim()}</h4>;
         }
-
-        // Handle Bullet Points (* Item or - Item)
         if (cleanLine.startsWith("* ") || cleanLine.startsWith("- ")) {
           const content = cleanLine.substring(2);
-          // Parse Bold within bullets
           return (
             <div key={index} className="list-item">
               • <span dangerouslySetInnerHTML={{
@@ -37,8 +29,6 @@ const FormatAIResponse = ({ text }) => {
             </div>
           );
         }
-
-        // Handle Standard Paragraphs with Bold (**text**)
         return (
           <p key={index} dangerouslySetInnerHTML={{
             __html: cleanLine.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
@@ -55,16 +45,13 @@ export default function Analyze({ user, onLogout }) {
   const [previewUrl, setPreviewUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  // Refs
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const API_URL = "https://derm-ai-c8yx.onrender.com/analyze";
 
-  // ✅ SCROLL FIX: Trigger scroll whenever chatHistory or loading state changes
   useEffect(() => {
     if (chatEndRef.current) {
-      // Small timeout ensures DOM is fully rendered before scrolling
       setTimeout(() => {
         chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
       }, 100);
@@ -80,6 +67,39 @@ export default function Analyze({ user, onLogout }) {
   };
 
   const triggerFileInput = () => fileInputRef.current.click();
+
+  // --- PDF DOWNLOAD LOGIC ---
+  const handleDownloadPDF = (content) => {
+    const doc = new jsPDF();
+    
+    // 1. Add Title
+    doc.setFontSize(18);
+    doc.text("DermAI Skin Analysis Report", 15, 20);
+    
+    // 2. Add Date
+    doc.setFontSize(10);
+    doc.setTextColor(100);
+    doc.text(`Generated on: ${new Date().toLocaleString()}`, 15, 28);
+    
+    // 3. Add Line Separator
+    doc.setDrawColor(200);
+    doc.line(15, 32, 195, 32);
+
+    // 4. Clean Text (Remove Markdown symbols for PDF readability)
+    const cleanText = content
+      .replace(/###/g, "")   // Remove headers
+      .replace(/\*\*/g, "")  // Remove bold
+      .replace(/\*/g, "•");  // Replace bullets
+
+    // 5. Wrap Text
+    doc.setFontSize(12);
+    doc.setTextColor(0);
+    const splitText = doc.splitTextToSize(cleanText, 180); // Width 180mm
+    doc.text(splitText, 15, 40);
+
+    // 6. Save
+    doc.save("DermAI_Analysis.pdf");
+  };
 
   const handleSubmit = async () => {
     if (!image) return;
@@ -102,7 +122,7 @@ export default function Analyze({ user, onLogout }) {
 
       const botEntry = {
         type: 'bot',
-        content: response.data.analysis, // Raw text passed to formatter later
+        content: response.data.analysis, 
         timestamp: new Date()
       };
 
@@ -142,9 +162,7 @@ export default function Analyze({ user, onLogout }) {
         </header>
 
         <div className="analyze-content">
-          {/* LEFT COLUMN: CHAT */}
           <div className="chat-section">
-
             <div className="chat-window">
               {chatHistory.length === 0 ? (
                 <div className="empty-state">
@@ -153,7 +171,6 @@ export default function Analyze({ user, onLogout }) {
                   </div>
                   <h2>Good afternoon</h2>
                   <p>Upload a photo to begin your skin analysis.</p>
-
                   <div className="suggestion-cards">
                     <div className="suggestion-card" onClick={triggerFileInput}>
                       <h3>Upload Photo</h3>
@@ -174,14 +191,24 @@ export default function Analyze({ user, onLogout }) {
                           <img src={msg.content} alt="User upload" className="user-uploaded-image" />
                         ) : (
                           <div className="bot-text">
-                            {/* ✅ Formatted Component Used Here */}
                             <FormatAIResponse text={msg.content} />
+                            
+                            {/* --- DOWNLOAD BUTTON ADDED HERE --- */}
+                            {!msg.isError && (
+                              <button 
+                                className="pdf-download-btn" 
+                                onClick={() => handleDownloadPDF(msg.content)}
+                              >
+                                <Download size={14} />
+                                Download PDF Report
+                              </button>
+                            )}
+                            
                           </div>
                         )}
                       </div>
                     </div>
                   ))}
-
                   {isLoading && (
                     <div className="message-row bot">
                       <div className="message-bubble loading-bubble">
@@ -190,7 +217,6 @@ export default function Analyze({ user, onLogout }) {
                       </div>
                     </div>
                   )}
-                  {/* ✅ Invisible div to anchor scrolling */}
                   <div ref={chatEndRef} style={{ float: "left", clear: "both" }} />
                 </div>
               )}
@@ -203,7 +229,6 @@ export default function Analyze({ user, onLogout }) {
                   <button onClick={() => { setPreviewUrl(""); setImage(null); }}>×</button>
                 </div>
               )}
-
               <div className="input-wrapper">
                 <input
                   type="file"
@@ -212,15 +237,12 @@ export default function Analyze({ user, onLogout }) {
                   onChange={handleFileChange}
                   style={{ display: "none" }}
                 />
-
                 <button className="icon-btn" onClick={triggerFileInput}>
                   <Plus size={20} />
                 </button>
-
                 <div className="fake-input" onClick={triggerFileInput}>
                   {image ? image.name : "Upload a lesion image..."}
                 </div>
-
                 <button
                   className="send-btn"
                   onClick={handleSubmit}
@@ -231,11 +253,9 @@ export default function Analyze({ user, onLogout }) {
               </div>
             </div>
           </div>
-
           <div className="right-panel">
             <HealthTips />
           </div>
-
         </div>
       </div>
     </div>
