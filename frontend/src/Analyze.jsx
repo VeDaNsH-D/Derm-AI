@@ -59,7 +59,7 @@ export default function Analyze({ user, onLogout }) {
   const chatEndRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const API_URL = "http://127.0.0.1:5000/analyze";
+  const API_URL = "https://derm-ai-c8yx.onrender.com/analyze";
 
   // ✅ SCROLL FIX: Trigger scroll whenever chatHistory or loading state changes
   useEffect(() => {
