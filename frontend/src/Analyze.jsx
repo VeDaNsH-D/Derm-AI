@@ -1,16 +1,58 @@
 import React, { useState, useRef, useEffect } from "react";
 import axios from "axios";
-import { Send, Plus, Image as ImageIcon, Loader2 } from "lucide-react"; // Added Icons
+import { Send, Plus, Loader2 } from "lucide-react";
 import AppSidebar from "./components/AppSidebar";
-import AnalysisResults from "./components/AnalysisResults"; // We will reuse this inside the chat bubble
 import HealthTips from "./components/HealthTips";
 import DermAILogo from "./components/DermAILogo";
 import "./Analyze.css";
 
+// --- HELPER COMPONENT: Format Text ---
+// This removes special characters like **, ###, etc., and renders clean HTML
+const FormatAIResponse = ({ text }) => {
+  if (!text) return null;
+
+  // Split text by lines to handle structure
+  const lines = text.split("\n");
+
+  return (
+    <div className="formatted-content">
+      {lines.map((line, index) => {
+        const cleanLine = line.trim();
+        if (!cleanLine) return <br key={index} />;
+
+        // Handle Headers (### Title)
+        if (cleanLine.startsWith("###") || cleanLine.startsWith("##")) {
+          return <h4 key={index}>{cleanLine.replace(/#/g, "").trim()}</h4>;
+        }
+
+        // Handle Bullet Points (* Item or - Item)
+        if (cleanLine.startsWith("* ") || cleanLine.startsWith("- ")) {
+          const content = cleanLine.substring(2);
+          // Parse Bold within bullets
+          return (
+            <div key={index} className="list-item">
+              • <span dangerouslySetInnerHTML={{
+                __html: content.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+              }} />
+            </div>
+          );
+        }
+
+        // Handle Standard Paragraphs with Bold (**text**)
+        return (
+          <p key={index} dangerouslySetInnerHTML={{
+            __html: cleanLine.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+          }} />
+        );
+      })}
+    </div>
+  );
+};
+
 export default function Analyze({ user, onLogout }) {
-  const [chatHistory, setChatHistory] = useState([]); // Stores { type: 'user' | 'bot', content: any }
+  const [chatHistory, setChatHistory] = useState([]);
   const [image, setImage] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(""); // For the input area preview
+  const [previewUrl, setPreviewUrl] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   // Refs
@@ -19,9 +61,14 @@ export default function Analyze({ user, onLogout }) {
 
   const API_URL = "http://127.0.0.1:5000/analyze";
 
-  // Auto-scroll to bottom when chat history changes
+  // ✅ SCROLL FIX: Trigger scroll whenever chatHistory or loading state changes
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatEndRef.current) {
+      // Small timeout ensures DOM is fully rendered before scrolling
+      setTimeout(() => {
+        chatEndRef.current.scrollIntoView({ behavior: "smooth", block: "end" });
+      }, 100);
+    }
   }, [chatHistory, isLoading]);
 
   const handleFileChange = (e) => {
@@ -37,16 +84,12 @@ export default function Analyze({ user, onLogout }) {
   const handleSubmit = async () => {
     if (!image) return;
 
-    // 1. Add User Image to Chat
     const userEntry = { type: 'user', content: previewUrl, timestamp: new Date() };
     setChatHistory(prev => [...prev, userEntry]);
 
-    // 2. Clear Input Preview immediately
     const currentImage = image;
     setImage(null);
     setPreviewUrl("");
-
-    // 3. Set Loading State
     setIsLoading(true);
 
     const formData = new FormData();
@@ -57,16 +100,14 @@ export default function Analyze({ user, onLogout }) {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      // 4. Add Bot Response to Chat
       const botEntry = {
         type: 'bot',
-        content: response.data.analysis,
+        content: response.data.analysis, // Raw text passed to formatter later
         timestamp: new Date()
       };
 
       setChatHistory(prev => [...prev, botEntry]);
 
-      // Save to DB
       await axios.post("http://127.0.0.1:5000/save-analysis", {
         email: user.email,
         title: "Skin Analysis " + new Date().toLocaleString(),
@@ -82,10 +123,9 @@ export default function Analyze({ user, onLogout }) {
   };
 
   const handleHistorySelect = (item) => {
-    // Clear current chat and show the selected history as a "replayed" chat
     setChatHistory([
-      { type: 'bot', content: "Here is the archived analysis you requested:", timestamp: new Date() },
-      { type: 'bot', content: item.analysis, timestamp: new Date() }
+      { type: 'bot', content: "Here is the archived analysis you requested:" },
+      { type: 'bot', content: item.analysis }
     ]);
   };
 
@@ -94,7 +134,6 @@ export default function Analyze({ user, onLogout }) {
       <AppSidebar user={user} onLogout={onLogout} onSelectHistory={handleHistorySelect} />
 
       <div className="analyze-main">
-        {/* Header */}
         <header className="analyze-header">
           <div className="header-content">
             <h1>DermAI Analysis</h1>
@@ -102,16 +141,12 @@ export default function Analyze({ user, onLogout }) {
           </div>
         </header>
 
-        {/* Content Grid */}
         <div className="analyze-content">
-
-          {/* --- LEFT COLUMN: CHAT INTERFACE --- */}
+          {/* LEFT COLUMN: CHAT */}
           <div className="chat-section">
 
-            {/* Chat Window (Scrollable) */}
             <div className="chat-window">
               {chatHistory.length === 0 ? (
-                /* Empty State / Welcome Screen */
                 <div className="empty-state">
                   <div style={{ marginBottom: "16px" }}>
                     <DermAILogo size={48} />
@@ -131,7 +166,6 @@ export default function Analyze({ user, onLogout }) {
                   </div>
                 </div>
               ) : (
-                /* Message List */
                 <div className="message-list">
                   {chatHistory.map((msg, index) => (
                     <div key={index} className={`message-row ${msg.type}`}>
@@ -140,15 +174,14 @@ export default function Analyze({ user, onLogout }) {
                           <img src={msg.content} alt="User upload" className="user-uploaded-image" />
                         ) : (
                           <div className="bot-text">
-                            {/* Reusing your existing component to render the markdown result */}
-                            <AnalysisResults analysis={msg.content} isLoading={false} error={msg.isError ? msg.content : ""} />
+                            {/* ✅ Formatted Component Used Here */}
+                            <FormatAIResponse text={msg.content} />
                           </div>
                         )}
                       </div>
                     </div>
                   ))}
 
-                  {/* Loading Bubble */}
                   {isLoading && (
                     <div className="message-row bot">
                       <div className="message-bubble loading-bubble">
@@ -157,12 +190,12 @@ export default function Analyze({ user, onLogout }) {
                       </div>
                     </div>
                   )}
-                  <div ref={chatEndRef} />
+                  {/* ✅ Invisible div to anchor scrolling */}
+                  <div ref={chatEndRef} style={{ float: "left", clear: "both" }} />
                 </div>
               )}
             </div>
 
-            {/* Input Area (Fixed at bottom of left col) */}
             <div className="chat-input-area">
               {previewUrl && (
                 <div className="mini-preview">
@@ -199,7 +232,6 @@ export default function Analyze({ user, onLogout }) {
             </div>
           </div>
 
-          {/* --- RIGHT COLUMN: TIPS --- */}
           <div className="right-panel">
             <HealthTips />
           </div>

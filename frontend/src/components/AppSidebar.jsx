@@ -67,7 +67,7 @@ export default function AppSidebar({ user, onLogout, onSelectHistory }) {
 
       <div className="sidebar-header">
         <div className="sidebar-logo">
-          <DermAILogo size={30} />
+          <DermAILogo color={"#FFFFFF"} size={30} />
           <span>DermAI</span>
         </div>
 
