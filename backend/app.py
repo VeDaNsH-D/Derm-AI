@@ -32,9 +32,9 @@ def ping():
 mongo_uri = os.getenv("MONGO_URI")
 
 if not mongo_uri:
-    print("❌ ERROR: MONGO_URI missing in .env file")
+    print("ERROR: MONGO_URI missing in .env file")
 else:
-    print("✅ Loaded MONGO_URI:", mongo_uri)
+    print("Loaded MONGO_URI:", mongo_uri)
 
 app.config["MONGO_URI"] = mongo_uri
 
@@ -61,7 +61,7 @@ gemini_api_key = os.getenv("GEMINI_API_KEY")
 if gemini_api_key:
     genai.configure(api_key=gemini_api_key)
 else:
-    print("⚠️ WARNING: GEMINI_API_KEY missing in .env")
+    print("WARNING: GEMINI_API_KEY missing in .env")
 
 # ---------------------------------------------------------
 # SYSTEM PROMPT (Shortened)
@@ -100,7 +100,7 @@ def save_analysis():
         return jsonify({"message": "saved"}), 200
 
     except Exception as e:
-        print("❌ Error saving analysis:", e)
+        print("Error saving analysis:", e)
         return jsonify({"error": str(e)}), 500
 
 
@@ -123,7 +123,7 @@ def get_history():
         return jsonify(items), 200
 
     except Exception as e:
-        print("❌ Error fetching history:", e)
+        print("Error fetching history:", e)
         return jsonify({"error": str(e)}), 500
 
 
@@ -183,7 +183,7 @@ def analyze_image():
 
         for model_name in MODEL_CANDIDATES:
             try:
-                print(f"🔍 Trying model: {model_name}")
+                print(f" Trying model: {model_name}")
                 model = genai.GenerativeModel(model_name)
 
                 response = model.generate_content(
@@ -197,7 +197,7 @@ def analyze_image():
                 }), 200
 
             except Exception as e:
-                print(f"⚠️ Failed with {model_name}: {e}")
+                print(f" Failed with {model_name}: {e}")
                 last_error = e
                 continue
 
@@ -212,5 +212,5 @@ def analyze_image():
 # RUN SERVER
 # ---------------------------------------------------------
 if __name__ == "__main__":
-    print("🔥 Flask app starting...")
+    print("Flask app starting...")
     app.run(debug=True, port=5000)
