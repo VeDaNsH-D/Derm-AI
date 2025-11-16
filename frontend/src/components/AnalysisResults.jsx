@@ -1,50 +1,45 @@
-import React from 'react';
-import { AlertCircle, CheckCircle, TrendingUp } from 'lucide-react';
-import '../styles/AnalysisResults.css';
+import React from "react";
+import "../styles/AnalysisResults.css";
 
 export default function AnalysisResults({ analysis, isLoading, error }) {
-  if (isLoading) {
-    return (
-      <div className="results-section loading">
-        <div className="loader-container">
-          <div className="spinner"></div>
-          <p>Analyzing image...</p>
-        </div>
-      </div>
-    );
-  }
+  // Debug logging
+  console.log("AnalysisResults received:", analysis);
 
-  if (error) {
-    return (
-      <div className="results-section error">
-        <div className="error-box">
-          <AlertCircle size={20} />
-          <p>{error}</p>
-        </div>
-      </div>
-    );
-  }
+  const cleanAnalysis = analysis?.trim();
 
-  if (!analysis) {
-    return null;
-  }
+  // Don't render empty state
+  if (!cleanAnalysis && !isLoading && !error) return null;
 
   return (
-    <div className="results-section">
-      <div className="results-header">
-        <CheckCircle size={20} className="check-icon" />
-        <h2>Analysis Results</h2>
-      </div>
+    <div className="analysis-results-container">
 
-      <div className="analysis-card">
-        <div className="analysis-badge">
-          <TrendingUp size={16} />
-          <span>AI Analysis</span>
+      {/* Loading State */}
+      {isLoading && (
+        <div className="analysis-loading">
+          <div className="spinner"></div>
+          <p>Analyzing the image…</p>
         </div>
-        <div className="analysis-content">
-          {analysis}
+      )}
+
+      {/* Error State */}
+      {error && (
+        <div className="analysis-error">
+          <p>{error}</p>
         </div>
-      </div>
+      )}
+
+      {/* Actual Analysis Content */}
+      {cleanAnalysis && !isLoading && (
+        <div className="analysis-output">
+          <h2 className="analysis-title">Analysis Result</h2>
+
+          <div className="analysis-text">
+            {cleanAnalysis.split("\n").map((line, idx) => (
+              <p key={idx}>{line}</p>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

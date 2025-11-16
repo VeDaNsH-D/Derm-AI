@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
   MessageSquare,
   Plus,
@@ -7,126 +8,140 @@ import {
   Layers,
   ExternalLink,
   MoreHorizontal,
+  Trash2
 } from "lucide-react";
 import DermAILogo from "./DermAILogo";
 import "./AppSidebar.css";
 
-export default function AppSidebar({ user, onLogout }) {
+export default function AppSidebar({ user, onLogout, onSelectHistory }) {
   const [activeChat, setActiveChat] = useState(null);
+  const [recentChats, setRecentChats] = useState([]);
   const [showMenu, setShowMenu] = useState(false);
 
-  const recentChats = [
-    "Skin rash analysis on forearm",
-    "Mole examination and evaluation",
-    "Acne treatment consultation",
-    "Eczema symptoms discussion",
-    "Psoriasis flare-up management",
-    "Dermatitis diagnosis assistance",
-    "Skin discoloration concerns",
-    "Rosacea symptoms evaluation",
-    "Melanoma screening request",
-    "Hives and allergic reaction",
-    "Seborrheic dermatitis help",
-    "Vitiligo progression tracking",
-  ];
+  // Load history
+  const fetchHistory = async () => {
+    if (!user) return;
+
+    try {
+      const res = await axios.get(
+        `http://127.0.0.1:5000/history?email=${user.email}`
+      );
+      setRecentChats(res.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
+  }, [user]);
+
+  // Load analysis into UI
+  const handleSelect = async (id) => {
+    console.log("Clicked history item:", id);  // DEBUG
+
+    try {
+      const res = await axios.get(`http://127.0.0.1:5000/history-item?id=${id}`);
+      console.log("History item loaded:", res.data);  // DEBUG
+
+      onSelectHistory(res.data);
+      setActiveChat(id);
+    } catch (err) {
+      console.error("Error loading history item:", err);
+    }
+  };
+
+
+  // Delete item
+  const handleDelete = async (id) => {
+    try {
+      await axios.delete(`http://127.0.0.1:5000/delete-analysis?id=${id}`);
+      fetchHistory(); // Refresh list
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <div className="app-sidebar">
 
-      {/* Header */}
       <div className="sidebar-header">
         <div className="sidebar-logo">
           <DermAILogo size={30} />
-          <span style={{ fontWeight: 600, letterSpacing: "-0.5px" }}>
-            DermAI
-          </span>
+          <span>DermAI</span>
         </div>
 
         <button className="new-chat-button">
           <div className="new-chat-icon">
-            <Plus size={14} strokeWidth={2} />
+            <Plus size={14} />
           </div>
           <span>New chat</span>
         </button>
       </div>
 
-      {/* Navigation */}
       <div className="sidebar-nav">
         <button className="nav-button">
-          <MessageSquare size={18} strokeWidth={1.8} />
+          <MessageSquare size={18} />
           <span>Chats</span>
         </button>
         <button className="nav-button">
-          <Microscope size={18} strokeWidth={1.8} />
+          <Microscope size={18} />
           <span>Analyses</span>
-        </button>
-        <button className="nav-button">
-          <Layers size={18} strokeWidth={1.8} />
-          <span>Artifacts</span>
-        </button>
-        <button className="nav-button">
-          <FileText size={18} strokeWidth={1.8} />
-          <span>Reports</span>
-          <ExternalLink
-            size={14}
-            strokeWidth={1.8}
-            className="nav-external-icon"
-          />
         </button>
       </div>
 
-      {/* Recents */}
       <div className="recents-section">
         <div className="recents-label">Recents</div>
 
         <div className="recents-list">
-          {recentChats.map((chat, idx) => (
-            <button
-              key={idx}
-              onClick={() => setActiveChat(idx)}
-              className={`recent-item ${activeChat === idx ? "active" : ""}`}
+          {recentChats.map((chat) => (
+            <div
+              key={chat._id}
+              className={`recent-item ${activeChat === chat._id ? "active" : ""}`}
             >
-              <span className="recent-text">{chat}</span>
-              <MoreHorizontal
-                size={14}
-                strokeWidth={1.8}
-                className="recent-more-icon"
-              />
-            </button>
+              <button
+                onClick={() => handleSelect(chat._id)}
+                className="recent-text"
+              >
+                {chat.title}
+              </button>
+
+              <button
+                className="delete-btn"
+                onClick={() => handleDelete(chat._id)}
+                title="Delete"
+              >
+                <Trash2 size={14} strokeWidth={1.7} />
+              </button>
+
+            </div>
           ))}
         </div>
       </div>
 
-      {/* User Footer */}
       <div className="sidebar-footer">
-        <div
-          className="user-button"
-          onClick={() => setShowMenu(!showMenu)}
-          style={{ cursor: "pointer" }}
-        >
+        <div className="user-button" onClick={() => setShowMenu(!showMenu)}>
           {user?.picture ? (
-            <img src={user.picture} alt="User" className="user-avatar" />
+            <img src={user.picture} className="user-avatar" />
           ) : (
-            <div className="user-avatar">{user?.name?.[0] || "U"}</div>
+            <div className="user-avatar">{user?.name?.[0]}</div>
           )}
 
           <div className="user-info">
-            <p className="user-name">{user?.name}</p>
-            <p className="user-email">{user?.email}</p>
+            <p className="user-name">{user.name}</p>
+            <p className="user-email">{user.email}</p>
           </div>
         </div>
 
         {showMenu && (
           <div className="user-menu-dropdown">
-
-            {/* ONLY Logout now */}
             <button className="dropdown-item logout" onClick={onLogout}>
               Logout
             </button>
-
           </div>
         )}
       </div>
+
     </div>
   );
 }

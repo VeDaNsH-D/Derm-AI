@@ -8,14 +8,20 @@ import DermAILogo from "./components/DermAILogo";
 import "./Analyze.css";
 
 export default function Analyze({ user, onLogout }) {
+
+  // ✅ ALL HOOKS MUST BE IN HERE
   const [image, setImage] = useState(null);
   const [previewUrl, setPreviewUrl] = useState("");
   const [analysis, setAnalysis] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const analysisRef = useRef(null);
   const fileInputRef = useRef(null);
-  const API_URL = "https://derm-ai-c8yx.onrender.com/analyze";
+
+
+  const API_URL = "http://127.0.0.1:5000/analyze";
+  // const API_URL = "https://derm-ai-c8yx.onrender.com/analyze";
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -48,6 +54,13 @@ export default function Analyze({ user, onLogout }) {
       });
 
       setAnalysis(response.data.analysis);
+
+      await axios.post("http://127.0.0.1:5000/save-analysis", {
+        email: user.email,
+        title: "Skin Analysis " + new Date().toLocaleString(),
+        analysis: response.data.analysis,
+      });
+
     } catch (err) {
       const msg = err.response?.data?.error || "An unknown error occurred.";
       setError(msg);
@@ -58,8 +71,25 @@ export default function Analyze({ user, onLogout }) {
 
   return (
     <div className="analyze-container">
-      {/* Sidebar now handles its own open/close on hover via CSS */}
-      <AppSidebar user={user} onLogout={onLogout} />
+
+      {/* Sidebar */}
+      <AppSidebar
+        user={user}
+        onLogout={onLogout}
+        onSelectHistory={(item) => {
+          console.log("Sidebar sent item:", item);
+
+          setAnalysis(item.analysis.trim());
+          setPreviewUrl("");
+          setImage(null);
+
+          setTimeout(() => {
+            analysisRef.current?.scrollIntoView({ behavior: "smooth" });
+          }, 100);
+        }}
+      />
+
+
 
 
       <div className="analyze-main">
@@ -71,13 +101,14 @@ export default function Analyze({ user, onLogout }) {
           </div>
         </header>
 
-        {/* Content Area */}
+        {/* Content */}
         <div className="analyze-content">
-          {/* Left Column: Analysis Interface */}
+
+          {/* Left Column */}
           <div className="analyze-section">
 
             <div className="greeting-section">
-              <div style={{ marginBottom: '16px' }}>
+              <div style={{ marginBottom: "16px" }}>
                 <DermAILogo size={56} />
               </div>
               <h2>Good afternoon</h2>
@@ -121,7 +152,7 @@ export default function Analyze({ user, onLogout }) {
 
             {previewUrl && (
               <div className="preview-section">
-                <img src={previewUrl || "/placeholder.svg"} alt="Selected lesion" />
+                <img src={previewUrl} alt="Selected lesion" />
                 <button
                   className="remove-btn"
                   onClick={() => {
@@ -149,7 +180,7 @@ export default function Analyze({ user, onLogout }) {
             />
           </div>
 
-          {/* Right Column: Tips Only */}
+          {/* Right Column */}
           <div className="right-panel">
             <HealthTips />
           </div>
