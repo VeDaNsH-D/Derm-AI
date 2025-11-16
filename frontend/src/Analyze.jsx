@@ -108,7 +108,7 @@ export default function Analyze({ user, onLogout }) {
 
       setChatHistory(prev => [...prev, botEntry]);
 
-      await axios.post("http://127.0.0.1:5000/save-analysis", {
+      await axios.post("https://derm-ai-c8yx.onrender.com/save-analysis", {
         email: user.email,
         title: "Skin Analysis " + new Date().toLocaleString(),
         analysis: response.data.analysis,
